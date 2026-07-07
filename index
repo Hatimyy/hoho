@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<title>HOHO HUB | Script Code</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"/>
+<style>
+  :root {
+    --bg: #0d0d12;
+    --bg-card: #16161f;
+    --bg-code: #13131a;
+    --border: rgba(255,255,255,0.06);
+    --primary: #6366f1;
+    --text: #e2e2e8;
+    --text-muted: #6b6b7b;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  .bg-mesh {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    background:
+      radial-gradient(ellipse at 20% 20%, rgba(99,102,241,0.08) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 80%, rgba(168,85,247,0.05) 0%, transparent 50%),
+      radial-gradient(ellipse at 50% 50%, rgba(6,182,212,0.03) 0%, transparent 70%);
+    animation: meshMove 15s ease-in-out infinite;
+  }
+
+  @keyframes meshMove {
+    0%, 100% { transform: translate(0,0) scale(1); }
+    33% { transform: translate(20px,-20px) scale(1.05); }
+    66% { transform: translate(-15px,15px) scale(0.95); }
+  }
+
+  .glass {
+    background: rgba(22,22,31,0.7);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+  }
+
+  .code-container {
+    background: var(--bg-code);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+  }
+
+  .code-header {
+    background: rgba(255,255,255,0.02);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .code-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .code-meta {
+    font-size: 12px;
+    color: var(--text-muted);
+    font-weight: 400;
+  }
+
+  .code-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .btn-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 14px;
+  }
+
+  .btn-icon:hover {
+    background: rgba(255,255,255,0.1);
+    color: var(--text);
+  }
+
+  .btn-copy {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 18px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    color: white;
+    font-size: 13px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s;
+    box-shadow: 0 4px 20px rgba(99,102,241,0.25);
+  }
+
+  .btn-copy:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 28px rgba(99,102,241,0.35);
+  }
+
+  .btn-copy:active { transform: scale(0.97); }
+
+  .btn-copy.copied {
+    background: linear-gradient(135deg, #10b981, #059669);
+    box-shadow: 0 4px 20px rgba(16,185,129,0.25);
+  }
+
+  .code-content {
+    padding: 20px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13.5px;
+    line-height: 1.8;
+    overflow-x: auto;
+    white-space: pre;
+    color: #e2e2e8;
+  }
+
+  .token-comment { color: #6b7280; font-style: italic; }
+  .token-keyword { color: #f59e0b; }
+  .token-function { color: #10b981; }
+  .token-string { color: #06b6d4; }
+  .token-method { color: #a855f7; }
+
+  .script-image {
+    width: 100%;
+    aspect-ratio: 16/9;
+    object-fit: cover;
+    border-radius: 16px;
+    border: 1px solid var(--border);
+  }
+
+  .tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    background: rgba(99,102,241,0.1);
+    border: 1px solid rgba(99,102,241,0.2);
+    color: #818cf8;
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  .toast {
+    position: fixed;
+    top: 24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-100px);
+    background: rgba(22,22,31,0.95);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 14px 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    z-index: 1000;
+    opacity: 0;
+    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+  }
+
+  .toast.show {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+  }
+
+  .toast-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #10b981, #059669);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 14px;
+  }
+
+  .glow {
+    position: absolute;
+    width: 300px;
+    height: 300px;
+    border-radius: 50%;
+    filter: blur(100px);
+    opacity: 0.15;
+    pointer-events: none;
+  }
+
+  .glow-1 { background: #6366f1; top: -100px; right: -100px; }
+  .glow-2 { background: #a855f7; bottom: -100px; left: -100px; }
+
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .animate-in { animation: fadeIn 0.6s ease-out forwards; }
+  .delay-1 { animation-delay: 0.1s; opacity: 0; }
+  .delay-2 { animation-delay: 0.2s; opacity: 0; }
+  .delay-3 { animation-delay: 0.3s; opacity: 0; }
+</style>
+<base target="_blank">
+</head>
+<body>
+
+<div class="bg-mesh"></div>
+
+<div class="toast" id="toast">
+  <div class="toast-icon"><i class="fas fa-check"></i></div>
+  <span id="toastText">Code copied!</span>
+</div>
+
+<div class="relative z-10 min-h-screen flex flex-col items-center justify-center px-4 py-12">
+
+  <div class="glow glow-1"></div>
+  <div class="glow glow-2"></div>
+
+  <div class="w-full max-w-2xl">
+
+    <div class="text-center mb-8 animate-in">
+      <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 mb-6">
+        <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+        <span class="text-xs font-medium text-gray-400">Verified Script</span>
+      </div>
+      <h1 class="text-3xl md:text-4xl font-black text-white mb-3 tracking-tight">HOHO HUB</h1>
+      <div class="flex items-center justify-center gap-3 flex-wrap">
+        <span class="tag"><i class="fas fa-code text-xs"></i> Blox Fruits</span>
+        <span class="text-sm text-gray-500">by @acsu123</span>
+      </div>
+    </div>
+
+    <div class="glass script-card p-4 mb-6 animate-in delay-1">
+      <img src="https://i.postimg.cc/fbwhR938/858F625C-C0CC-49FC-B24A-413657A54AEB.jpg" alt="HOHO HUB" class="script-image" onerror="this.style.display='none'"/>
+    </div>
+
+    <div class="code-container animate-in delay-2">
+      <div class="code-header">
+        <div class="code-title">
+          <i class="fas fa-terminal text-indigo-400"></i>
+          <span>Script Code</span>
+          <span class="code-meta">4 lines &middot; 166 B</span>
+        </div>
+        <div class="code-actions">
+          <button class="btn-icon" title="View Log" onclick="showToast('Log feature coming soon!')">
+            <i class="fas fa-history"></i>
+          </button>
+          <button class="btn-icon" title="Download" onclick="downloadCode()">
+            <i class="fas fa-download"></i>
+          </button>
+          <button class="btn-copy" id="copyBtn" onclick="copyCode()">
+            <i class="fas fa-copy"></i>
+            <span>Copy Code</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="code-content" id="codeBlock">--[[
+	WARNING: Heads up! This script has not been verified by ScriptBlox. Use at your own risk!
+]]
+loadstring(game:HttpGet('https://raw.githubusercontent.com/acsu123/HOHO_H/main/Loading_UI'))()</div>
+    </div>
+
+    <div class="text-center mt-8 animate-in delay-3">
+      <p class="text-xs text-gray-600">
+        <i class="fas fa-shield-alt mr-1"></i>
+        This script is provided as-is. Use at your own risk.
+      </p>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const codeText = `--[[
+	WARNING: Heads up! This script has not been verified by ScriptBlox. Use at your own risk!
+]]
+loadstring(game:HttpGet('https://raw.githubusercontent.com/acsu123/HOHO_H/main/Loading_UI'))()`;
+
+function copyCode() {
+  navigator.clipboard.writeText(codeText).then(() => {
+    const btn = document.getElementById('copyBtn');
+    const originalHTML = btn.innerHTML;
+    btn.classList.add('copied');
+    btn.innerHTML = '<i class="fas fa-check"></i><span>Copied!</span>';
+    showToast('Code copied to clipboard!');
+    setTimeout(() => {
+      btn.classList.remove('copied');
+      btn.innerHTML = originalHTML;
+    }, 2000);
+  }).catch(() => {
+    const textarea = document.createElement('textarea');
+    textarea.value = codeText;
+    textarea.style.position = 'fixed';
+    textarea.style.opacity = '0';
+    document.body.appendChild(textarea);
+    textarea.select();
+    document.execCommand('copy');
+    document.body.removeChild(textarea);
+    showToast('Code copied to clipboard!');
+  });
+}
+
+function downloadCode() {
+  const blob = new Blob([codeText], { type: 'text/plain' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'HOHO_HUB_script.lua';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  showToast('Script downloaded!');
+}
+
+function showToast(message) {
+  const toast = document.getElementById('toast');
+  const toastText = document.getElementById('toastText');
+  toastText.textContent = message;
+  toast.classList.add('show');
+  setTimeout(() => { toast.classList.remove('show'); }, 3000);
+}
+
+// Syntax highlighting
+document.addEventListener('DOMContentLoaded', () => {
+  const block = document.getElementById('codeBlock');
+  let html = block.innerHTML;
+
+  // Multi-line comments
+  html = html.replace(/(--\[\[[\s\S]*?\]\])/g, '<span class="token-comment">$1</span>');
+  // Single-line comments
+  html = html.replace(/(--[^
+]*)/g, '<span class="token-comment">$1</span>');
+  // Strings
+  html = html.replace(/('[^']*')/g, '<span class="token-string">$1</span>');
+  html = html.replace(/("[^"]*")/g, '<span class="token-string">$1</span>');
+  // Keywords
+  html = html.replace(/(loadstring|repeat|until|task|wait|game|IsLoaded|Players|LocalPlayer)/g, '<span class="token-keyword">$1</span>');
+  // HttpGet method
+  html = html.replace(/(HttpGet)/g, '<span class="token-method">$1</span>');
+
+  block.innerHTML = html;
+});
+</script>
+
+</body>
+</html>
